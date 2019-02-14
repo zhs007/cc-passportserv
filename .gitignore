@@ -62,5 +62,3 @@ typings/
 .idea
 run
 package-lock.json
-cfg/config.yaml
-config

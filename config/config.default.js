@@ -7,15 +7,15 @@ module.exports = appInfo => {
     // database configuration
     client: {
       // host
-      host: cfg.passportdb.host,
+      host: 'mysql',
       // port
-      port: cfg.passportdb.port,
+      port: 3306,
       // username
-      user: cfg.passportdb.user,
+      user: 'dbuser',
       // password
-      password: cfg.passportdb.passwd,
+      password: '123456',
       // database
-      database: cfg.passportdb.dbname,
+      database: 'ccpassport',
     },
     // load into app, default is open
     app: true,
