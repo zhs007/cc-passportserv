@@ -29,5 +29,8 @@ module.exports = appInfo => {
   // add your config here
   config.middleware = [];
 
+  // account password salt
+  config.saltAccount = 'cc-passportserv:';
+
   return config;
 };

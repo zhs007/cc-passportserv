@@ -2,7 +2,6 @@
 
 const Service = require('egg').Service;
 const crypto = require('crypto');
-const md5 = crypto.createHash('md5');
 
 // AccountService - account service
 class AccountService extends Service {
@@ -41,8 +40,10 @@ class AccountService extends Service {
     await this.app.mysql.query('truncate table account');
   }
 
+  // hashPassword - hash password
   hashPassword(passwd) {
-    return md5.update(passwd).digest('hex');
+    const md5 = crypto.createHash('md5');
+    return md5.update(this.config.saltAccount + passwd).digest('hex');
   }
 }
 
