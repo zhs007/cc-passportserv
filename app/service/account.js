@@ -2,9 +2,15 @@
 
 const Service = require('egg').Service;
 const crypto = require('crypto');
+const { ERR_INSACCOUNT_DUPEMAILORUNAME,
+  ERR_MYSQL_QUERY,
+  ERR_UNKNOWN,
+  ERR_CHECKLOGIN_INVALIDEMAILPASSWORD,
+  OK } = require('../basedef');
 
 const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 const usernameRegexp = /^[A-Za-z0-9]+$/;
+const passwordRegexp = /^[a-zA-Z0-9.@:;!#$%&'*+/=?^_`{|}~-]+$/;
 
 // AccountService - account service
 class AccountService extends Service {
@@ -45,36 +51,41 @@ class AccountService extends Service {
   }
 
   // insAccount - insert account
-  //    return isSuccess
+  //    return number, see basedef.js
   async insAccount(email, username, passwd) {
     try {
       const result = await this.app.mysql.query('insert account (email, username, passwd) values (?, ?, ?)', [ email, username, passwd ]);
-      return result.affectedRows === 1;
+
+      if (result.affectedRows === 1) {
+        return OK;
+      }
+
+      return ERR_UNKNOWN;
     } catch (e) {
       if (e.code === 'ER_DUP_ENTRY') {
-        return false;
+        return ERR_INSACCOUNT_DUPEMAILORUNAME;
       }
 
       this.logger.error('insAccount mysql error.', e);
 
-      return false;
+      return ERR_MYSQL_QUERY;
     }
   }
 
   // checkLogin - check email and password (hashed)
-  //    return {id, username, createtime} or undefined
+  //    return [code, {id, username, createtime}]
   async checkLogin(email, passwd) {
     try {
       const result = await this.app.mysql.query('select id, username, createtime from account where email = ? and passwd = ?', [ email, passwd ]);
       if (result.length === 1) {
-        return result[0];
+        return [ OK, result[0] ];
       }
 
-      return undefined;
+      return [ ERR_CHECKLOGIN_INVALIDEMAILPASSWORD, undefined ];
     } catch (e) {
       this.logger.error('checkLogin mysql error.', e);
 
-      return undefined;
+      return [ ERR_MYSQL_QUERY, undefined ];
     }
   }
 
@@ -98,6 +109,11 @@ class AccountService extends Service {
   // validateUserName - validate username
   validateUserName(username) {
     return username.length >= 4 && username.length <= 20 && usernameRegexp.test(username);
+  }
+
+  // validatePassword - validate password
+  validatePassword(passwd) {
+    return passwd.length >= 8 && passwd.length <= 20 && passwordRegexp.test(passwd);
   }
 }
 

@@ -1,10 +1,13 @@
 'use strict';
 
 const { app, assert } = require('egg-mock/bootstrap');
+const { ERR_INSACCOUNT_DUPEMAILORUNAME,
+  OK,
+  ERR_CHECKLOGIN_INVALIDEMAILPASSWORD } = require('../../../app/basedef');
 
 describe('test/app/service/account.test.js', () => {
 
-  it('clear all account', async () => {
+  before(async () => {
     const ctx = app.mockContext();
 
     await ctx.service.account._clearAllAccount();
@@ -69,16 +72,36 @@ describe('test/app/service/account.test.js', () => {
     }
   });
 
+  it('validate password', async () => {
+    const ctx = app.mockContext();
+
+    const pair = [
+      [ 'abcdabcd.io', true ],
+      [ 'abcd@abcd.io', true ],
+      [ '1234567', false ],
+      [ '12345678901234567890a', false ],
+      [ 'ABCDefgh', true ],
+      [ 'abCd1234', true ],
+      [ 'a_-.{}*:;+', true ],
+    ];
+
+    for (let i = 0; i < pair.length; ++i) {
+      const result = ctx.service.account.validatePassword(pair[i][0]);
+
+      assert(result === pair[i][1]);
+    }
+  });
+
   it('should insert account', async () => {
     const ctx = app.mockContext();
 
     const pair = [
-      [ 'abcd@heyalgo.io', 'abcd', ctx.service.account.hashPassword('abcd@heyalgo'), true ],
-      [ 'abcd1@heyalgo.io', 'abcd1', ctx.service.account.hashPassword('abcd1@heyalgo'), true ],
-      [ 'abcd1@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), false ],
-      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('abcd2@heyalgo'), true ],
-      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), false ],
-      [ 'abcd2@heyalgo.io', 'abcd3', ctx.service.account.hashPassword('123456'), false ],
+      [ 'abcd@heyalgo.io', 'abcd', ctx.service.account.hashPassword('abcd@heyalgo'), OK ],
+      [ 'abcd1@heyalgo.io', 'abcd1', ctx.service.account.hashPassword('abcd1@heyalgo'), OK ],
+      [ 'abcd1@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), ERR_INSACCOUNT_DUPEMAILORUNAME ],
+      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('abcd2@heyalgo'), OK ],
+      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), ERR_INSACCOUNT_DUPEMAILORUNAME ],
+      [ 'abcd2@heyalgo.io', 'abcd3', ctx.service.account.hashPassword('123456'), ERR_INSACCOUNT_DUPEMAILORUNAME ],
     ];
 
     for (let i = 0; i < pair.length; ++i) {
@@ -92,18 +115,18 @@ describe('test/app/service/account.test.js', () => {
     const ctx = app.mockContext();
 
     const pair = [
-      [ 'abcd@heyalgo.io', 1 ],
-      [ 'abcd1@heyalgo.io', 2 ],
-      [ 'abcd2@heyalgo.io', 4 ],
-      [ 'abcd3@heyalgo.io', 0 ],
-      [ 'abcd', 0 ],
-      [ 'abcd2', 0 ],
+      [ 'abcd@heyalgo.io', true ],
+      [ 'abcd1@heyalgo.io', true ],
+      [ 'abcd2@heyalgo.io', true ],
+      [ 'abcd3@heyalgo.io', false ],
+      [ 'abcd', false ],
+      [ 'abcd2', false ],
     ];
 
     for (let i = 0; i < pair.length; ++i) {
       const result = await ctx.service.account.findWithEMail(pair[i][0]);
 
-      assert(result === pair[i][1]);
+      assert((result > 0) === pair[i][1]);
     }
   });
 
@@ -111,18 +134,18 @@ describe('test/app/service/account.test.js', () => {
     const ctx = app.mockContext();
 
     const pair = [
-      [ 'abcd', 1 ],
-      [ 'abcd1', 2 ],
-      [ 'abcd2', 4 ],
-      [ 'abcd3', 0 ],
-      [ 'abcd@heyalgo.io', 0 ],
-      [ 'abcd2@heyalgo.io', 0 ],
+      [ 'abcd', true ],
+      [ 'abcd1', true ],
+      [ 'abcd2', true ],
+      [ 'abcd3', false ],
+      [ 'abcd@heyalgo.io', false ],
+      [ 'abcd2@heyalgo.io', false ],
     ];
 
     for (let i = 0; i < pair.length; ++i) {
       const result = await ctx.service.account.findWithUserName(pair[i][0]);
 
-      assert(result === pair[i][1]);
+      assert((result > 0) === pair[i][1]);
     }
   });
 
@@ -130,20 +153,19 @@ describe('test/app/service/account.test.js', () => {
     const ctx = app.mockContext();
 
     const pair = [
-      [ 'abcd@heyalgo.io', 'abcd', ctx.service.account.hashPassword('abcd@heyalgo'), 1 ],
-      [ 'abcd1@heyalgo.io', 'abcd1', ctx.service.account.hashPassword('abcd1@heyalgo'), 2 ],
-      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('abcd2@heyalgo'), 4 ],
-      [ 'abcd2@heyalgo.io', undefined, ctx.service.account.hashPassword('123456'), undefined ],
-      [ 'abcd3@heyalgo.io', undefined, ctx.service.account.hashPassword('abcd3@heyalgo'), undefined ],
+      [ 'abcd@heyalgo.io', 'abcd', ctx.service.account.hashPassword('abcd@heyalgo'), OK ],
+      [ 'abcd1@heyalgo.io', 'abcd1', ctx.service.account.hashPassword('abcd1@heyalgo'), OK ],
+      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('abcd2@heyalgo'), OK ],
+      [ 'abcd2@heyalgo.io', undefined, ctx.service.account.hashPassword('123456'), ERR_CHECKLOGIN_INVALIDEMAILPASSWORD ],
+      [ 'abcd3@heyalgo.io', undefined, ctx.service.account.hashPassword('abcd3@heyalgo'), ERR_CHECKLOGIN_INVALIDEMAILPASSWORD ],
     ];
 
     for (let i = 0; i < pair.length; ++i) {
-      const result = await ctx.service.account.checkLogin(pair[i][0], pair[i][2]);
+      const [ code, result ] = await ctx.service.account.checkLogin(pair[i][0], pair[i][2]);
 
-      if (result === undefined) {
-        assert(result === pair[i][3]);
-      } else {
-        assert(result.id === pair[i][3]);
+      assert(code === pair[i][3]);
+
+      if (code === OK) {
         assert(result.username === pair[i][1]);
       }
     }
