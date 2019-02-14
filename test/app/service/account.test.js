@@ -30,10 +30,10 @@ describe('test/app/service/account.test.js', () => {
     const ctx = app.mockContext();
 
     const pair = [
-      [ 'abcd@heyalgo.io', 'abcd', ctx.service.account.hashPassword('123456'), true ],
-      [ 'abcd1@heyalgo.io', 'abcd1', ctx.service.account.hashPassword('123456'), true ],
+      [ 'abcd@heyalgo.io', 'abcd', ctx.service.account.hashPassword('abcd@heyalgo'), true ],
+      [ 'abcd1@heyalgo.io', 'abcd1', ctx.service.account.hashPassword('abcd1@heyalgo'), true ],
       [ 'abcd1@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), false ],
-      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), true ],
+      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('abcd2@heyalgo'), true ],
       [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), false ],
       [ 'abcd2@heyalgo.io', 'abcd3', ctx.service.account.hashPassword('123456'), false ],
     ];
@@ -44,4 +44,44 @@ describe('test/app/service/account.test.js', () => {
       assert(result === pair[i][3]);
     }
   });
+
+  it('should find account with email', async () => {
+    const ctx = app.mockContext();
+
+    const pair = [
+      [ 'abcd@heyalgo.io', 1 ],
+      [ 'abcd1@heyalgo.io', 2 ],
+      [ 'abcd2@heyalgo.io', 4 ],
+      [ 'abcd3@heyalgo.io', 0 ],
+      [ 'abcd', 0 ],
+      [ 'abcd2', 0 ],
+    ];
+
+    for (let i = 0; i < pair.length; ++i) {
+      const result = await ctx.service.account.findWithEMail(pair[i][0]);
+
+      assert(result === pair[i][1]);
+    }
+  });
+
+  it('should find account with username', async () => {
+    const ctx = app.mockContext();
+
+    const pair = [
+      [ 'abcd', 1 ],
+      [ 'abcd1', 2 ],
+      [ 'abcd2', 4 ],
+      [ 'abcd3', 0 ],
+      [ 'abcd@heyalgo.io', 0 ],
+      [ 'abcd2@heyalgo.io', 0 ],
+    ];
+
+    for (let i = 0; i < pair.length; ++i) {
+      const result = await ctx.service.account.findWithUserName(pair[i][0]);
+
+      assert(result === pair[i][1]);
+    }
+  });
+
+
 });

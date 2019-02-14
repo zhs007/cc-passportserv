@@ -7,17 +7,38 @@ const crypto = require('crypto');
 class AccountService extends Service {
 
   // findWithEMail - find account with email
-  //    return id
+  //    return id, if it returns 0, it means it does not exist.
   async findWithEMail(email) {
-    const result = await this.app.mysql.query('select id from account where email = ?', email);
-    return result.id;
+    try {
+      const result = await this.app.mysql.query('select id from account where email = ?', email);
+
+      if (result.length === 1) {
+        return result[0].id;
+      }
+
+      return 0;
+    } catch (e) {
+      this.logger.error('findWithEMail mysql error.', e);
+
+      return 0;
+    }
   }
 
   // findWithUserName - find account with username
-  //    return id
+  //    return id, if it returns 0, it means it does not exist.
   async findWithUserName(username) {
-    const result = await this.app.mysql.query('select id from account where username = ?', username);
-    return result.id;
+    try {
+      const result = await this.app.mysql.query('select id from account where username = ?', username);
+      if (result.length === 1) {
+        return result[0].id;
+      }
+
+      return 0;
+    } catch (e) {
+      this.logger.error('findWithUserName mysql error.', e);
+
+      return 0;
+    }
   }
 
   // insAccount - insert account
@@ -34,10 +55,16 @@ class AccountService extends Service {
   }
 
   // checkLogin - check email and password (hashed)
-  //    return {id, username, createtime}
+  //    return {id, username, createtime} or undefined
   async checkLogin(email, passwd) {
-    const result = await this.app.mysql.query('select id, username, createtime from account where email = ? and passwd = ?', email, passwd);
-    return result;
+    try {
+      const result = await this.app.mysql.query('select id, username, createtime from account where email = ? and passwd = ?', email, passwd);
+      return result;
+    } catch (e) {
+      this.logger.error('checkLogin mysql error.', e);
+
+      return undefined;
+    }
   }
 
   // _clearAllAccount - clear all account
