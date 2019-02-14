@@ -23,8 +23,14 @@ class AccountService extends Service {
   // insAccount - insert account
   //    return isSuccess
   async insAccount(email, username, passwd) {
-    const result = await this.app.mysql.query('insert account (email, username, passwd) values (?, ?, ?)', [ email, username, passwd ]);
-    return result.affectedRows === 1;
+    try {
+      const result = await this.app.mysql.query('insert account (email, username, passwd) values (?, ?, ?)', [ email, username, passwd ]);
+      return result.affectedRows === 1;
+    } catch (e) {
+      this.logger.error('insAccount mysql error.', e);
+
+      return false;
+    }
   }
 
   // checkLogin - check email and password (hashed)

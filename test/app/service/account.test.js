@@ -20,7 +20,7 @@ describe('test/app/service/account.test.js', () => {
     ];
 
     for (let i = 0; i < pair.length; ++i) {
-      const hashstring = await ctx.service.account.hashPassword(pair[i][0]);
+      const hashstring = ctx.service.account.hashPassword(pair[i][0]);
 
       assert(hashstring === pair[i][1]);
     }
@@ -29,9 +29,19 @@ describe('test/app/service/account.test.js', () => {
   it('should insert account', async () => {
     const ctx = app.mockContext();
 
-    const isok = await ctx.service.account.insAccount('abcd@heyalgo.io', 'abcd', '123456');
+    const pair = [
+      [ 'abcd@heyalgo.io', 'abcd', ctx.service.account.hashPassword('123456'), true ],
+      [ 'abcd1@heyalgo.io', 'abcd1', ctx.service.account.hashPassword('123456'), true ],
+      [ 'abcd1@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), false ],
+      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), true ],
+      [ 'abcd2@heyalgo.io', 'abcd2', ctx.service.account.hashPassword('123456'), false ],
+      [ 'abcd2@heyalgo.io', 'abcd3', ctx.service.account.hashPassword('123456'), false ],
+    ];
 
-    assert(isok === true);
-    // assert(user.name === 'fengmk2');
+    for (let i = 0; i < pair.length; ++i) {
+      const result = await ctx.service.account.insAccount(pair[i][0], pair[i][1], pair[i][2]);
+
+      assert(result === pair[i][3]);
+    }
   });
 });
