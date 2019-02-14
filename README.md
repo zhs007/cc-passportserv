@@ -1,33 +1,20 @@
 # cc-passportserv
 
-coding challenge for passport
+This is a coding challenge for passport.  
+This service is based on [egg.js](https://eggjs.org/).  
+Use docker deployment, use nginx's upstream, and configure ssl for nginx.  
 
-## QuickStart
+### Install
 
-<!-- add docs here for user -->
+- Install mysql
+- Install redis
+- Import mysql database
+- Configure ``config/config.default.js``
+- Configure ``config/config.unittest.js`` (not required)
 
-see [egg docs][egg] for more detail.
-
-### Development
+### Unit Test
 
 ```bash
 $ npm i
-$ npm run dev
-$ open http://localhost:7001/
+$ npm test
 ```
-
-### Deploy
-
-```bash
-$ npm start
-$ npm stop
-```
-
-### npm scripts
-
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
-
-
-[egg]: https://eggjs.org
