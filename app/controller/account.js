@@ -8,13 +8,24 @@ const registerRule = {
   password: 'string',
 };
 
+const ERR_VALIDATE = 'ERR_VALIDATE';
+
 class AccountController extends Controller {
   async register() {
+    const jsonret = {
+      code: 'OK',
+    };
+
     const errors = this.app.validator.validate(registerRule, this.ctx.request.body);
 
-    this.logger.info(errors);
+    if (errors) {
+      jsonret.code = ERR_VALIDATE;
+      jsonret.errors = errors;
+    }
 
-    this.ctx.body = '{}';
+    this.logger.info(jsonret);
+
+    this.ctx.body = jsonret;
   }
 
   async login() {
