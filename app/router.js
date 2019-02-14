@@ -5,5 +5,8 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  router.get('/', controller.home.index);
+  router.post('/account/register', controller.account.register);
+  router.get('/account/login', controller.account.login);
+  router.get('/account/checkemail', controller.account.checkEMail);
+  router.get('/account/checkusername', controller.account.checkUserName);
 };
