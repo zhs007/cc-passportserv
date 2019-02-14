@@ -60,3 +60,7 @@ typings/
 # next.js build output
 .next
 .idea
+run
+package-lock.json
+cfg/config.yaml
+config
