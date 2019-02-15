@@ -7,7 +7,8 @@ const { OK,
   ERR_USERNAME_FORMAT,
   ERR_PASSWORD_FORMAT,
   ERR_DUP_EMAIL,
-  ERR_DUP_USERNAME } = require('../basedef');
+  ERR_DUP_USERNAME,
+  ERR_NOT_LOGIN } = require('../basedef');
 
 const registerRule = {
   email: 'string',
@@ -108,6 +109,8 @@ class AccountController extends Controller {
 
     if (code === OK) {
       jsonret.account = result;
+
+      this.ctx.session = result;
     }
   }
 
@@ -161,6 +164,29 @@ class AccountController extends Controller {
 
       return;
     }
+  }
+
+  async logout() {
+    this.ctx.body = {
+      code: OK,
+    };
+
+    this.ctx.session = null;
+  }
+
+  async getMyAccountInfo() {
+    if (this.ctx.session && this.ctx.session.id) {
+      this.ctx.body = {
+        code: OK,
+      };
+
+      return;
+    }
+
+    this.ctx.body = {
+      code: ERR_NOT_LOGIN,
+      account: this.ctx.session,
+    };
   }
 }
 

@@ -9,4 +9,7 @@ module.exports = app => {
   router.post('/account/login', controller.account.login);
   router.post('/account/checkemail', controller.account.checkEMail);
   router.post('/account/checkusername', controller.account.checkUserName);
+  router.post('/account/logout', controller.account.logout);
+
+  router.get('/account/myinfo', controller.account.getMyAccountInfo);
 };

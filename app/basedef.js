@@ -21,6 +21,8 @@ exports.ERR_PASSWORD_FORMAT = 2003;
 exports.ERR_DUP_EMAIL = 2004;
 // ERR_DUP_USERNAME - duplicate username
 exports.ERR_DUP_USERNAME = 2005;
+// ERR_NOT_LOGIN - not login
+exports.ERR_NOT_LOGIN = 2006;
 
 // ERR_MYSQL_QUERY - mysql error, see log file
 exports.ERR_MYSQL_QUERY = 10000;
