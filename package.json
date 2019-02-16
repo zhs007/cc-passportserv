@@ -27,6 +27,7 @@
   },
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-cc-passportserv",
+    "dockerstart": "egg-scripts start --title=egg-server-cc-passportserv",
     "stop": "egg-scripts stop --title=egg-server-cc-passportserv",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",

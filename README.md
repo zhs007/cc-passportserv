@@ -7,14 +7,24 @@ Use docker deployment, use nginx's upstream, and configure ssl for nginx.
 ### Install
 
 - Install mysql
-- Install redis
-- Import mysql database
+- Import mysql script ``sql/ccpassport.sql`` to the database
+- ``cp -rf ./cfg ./config``
 - Configure ``config/config.default.js``
-- Configure ``config/config.unittest.js`` (not required)
+- ``npm i``
 
 ### Unit Test
 
+Configure ``config/config.unittest.js``.  
+
 ```bash
-$ npm i
-$ npm test
+npm test
 ```
+
+### Docker Deployment
+
+- Install mysql
+- Import mysql script ``sql/ccpassport.sql`` to the database
+- ``cp -rf ./cfg ./config``
+- Configure ``config/config.default.js``
+- ``sh builddocker.sh``
+- ``sh startdocker.sh``
