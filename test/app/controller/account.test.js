@@ -24,7 +24,7 @@ describe('test/app/controller/account.test.js', async () => {
     assert(app.config.keys.startsWith(pkg.name));
   });
 
-  it('should POST /account/register', async () => {
+  it('should POST /api/account/register', async () => {
     app.mockCsrf();
 
     const pair = [
@@ -40,7 +40,7 @@ describe('test/app/controller/account.test.js', async () => {
 
     for (let i = 0; i < pair.length; ++i) {
       await app.httpRequest()
-        .post('/account/register')
+        .post('/api/account/register')
         .type('form')
         .send(pair[i][0])
         .expect(pair[i][1])
@@ -48,7 +48,7 @@ describe('test/app/controller/account.test.js', async () => {
     }
   });
 
-  it('should POST /account/login', async () => {
+  it('should POST /api/account/login', async () => {
     app.mockCsrf();
 
     const pair = [
@@ -63,7 +63,7 @@ describe('test/app/controller/account.test.js', async () => {
 
     for (let i = 0; i < pair.length; ++i) {
       const result = await app.httpRequest()
-        .post('/account/login')
+        .post('/api/account/login')
         .type('form')
         .send(pair[i][0]);
 
@@ -74,7 +74,7 @@ describe('test/app/controller/account.test.js', async () => {
     }
   });
 
-  it('should POST /account/checkemail', async () => {
+  it('should POST /api/account/checkemail', async () => {
     app.mockCsrf();
 
     const pair = [
@@ -86,7 +86,7 @@ describe('test/app/controller/account.test.js', async () => {
 
     for (let i = 0; i < pair.length; ++i) {
       const result = await app.httpRequest()
-        .post('/account/checkemail')
+        .post('/api/account/checkemail')
         .type('form')
         .send(pair[i][0]);
 
@@ -94,7 +94,7 @@ describe('test/app/controller/account.test.js', async () => {
     }
   });
 
-  it('should POST /account/checkusername', async () => {
+  it('should POST /api/account/checkusername', async () => {
     app.mockCsrf();
 
     const pair = [
@@ -106,7 +106,7 @@ describe('test/app/controller/account.test.js', async () => {
 
     for (let i = 0; i < pair.length; ++i) {
       const result = await app.httpRequest()
-        .post('/account/checkusername')
+        .post('/api/account/checkusername')
         .type('form')
         .send(pair[i][0]);
 

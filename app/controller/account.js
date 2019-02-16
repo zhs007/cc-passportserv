@@ -178,6 +178,7 @@ class AccountController extends Controller {
     if (this.ctx.session && this.ctx.session.id) {
       this.ctx.body = {
         code: OK,
+        account: this.ctx.session,
       };
 
       return;
@@ -185,7 +186,6 @@ class AccountController extends Controller {
 
     this.ctx.body = {
       code: ERR_NOT_LOGIN,
-      account: this.ctx.session,
     };
   }
 }
