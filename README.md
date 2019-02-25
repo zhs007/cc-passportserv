@@ -16,7 +16,7 @@ Use docker deployment, use nginx's upstream, and configure ssl for nginx.
 
 ### Unit Test
 
-You can see ``Dockerfile.unittest``.  
+We have prepared a docker configuration for unit testing, see ``Dockerfile.unittest``.  
 
 ```bash
 sh startunittest.sh
@@ -30,3 +30,5 @@ sh startunittest.sh
 - Configure ``config/config.default.js``
 - ``sh builddocker.sh``
 - ``sh startdocker.sh``
+
+[Passport API Document](https://app.swaggerhub.com/apis-docs/zhs007/cc-passport/1.0.0)

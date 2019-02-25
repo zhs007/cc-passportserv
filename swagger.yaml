@@ -1,0 +1,205 @@
+---
+swagger: "2.0"
+info:
+  description: This is a passport API
+  version: 1.0.0
+  title: Passport API
+  contact:
+    email: zerrozhao@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /zhs007/cc-passport/1.0.0
+tags:
+- name: register
+  description: register API
+- name: login
+  description: login API
+- name: checkemail
+  description: check email
+- name: checkusername
+  description: check username  
+schemes:
+- https
+paths:
+  /api/account/register:
+    post:
+      tags:
+      - register
+      summary: register API
+      description: |
+        You register account
+      operationId: newAccount
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: RegisterParams
+        description: register parameters
+        schema:
+          $ref: '#/definitions/RegisterParams'  
+      responses:
+        200:
+          description: register OK
+          schema:
+            $ref: '#/definitions/OKResult'
+        400:
+          description: bad input parameter
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/ErrorResult'
+  /api/account/login:
+    post:
+      tags:
+      - login
+      summary: login API
+      description: |
+        You can login with email and password
+      operationId: login
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: LoginParams
+        description: login parameters
+        schema:
+          $ref: '#/definitions/LoginParams'  
+      responses:
+        200:
+          description: login OK
+          schema:
+            $ref: '#/definitions/LoginResult'
+        400:
+          description: bad input parameter
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/ErrorResult'
+  /api/account/checkemail:
+    get:
+      tags:
+      - checkemail
+      summary: check email
+      description: check email
+      operationId: checkEMail
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: email
+        in: query
+        description: email
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/OKResult'
+        400:
+          description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/ErrorResult'
+  /api/account/checkusername:
+    get:
+      tags:
+      - checkusername
+      summary: check username
+      description: check username
+      operationId: checkUserName
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: username
+        in: query
+        description: username
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/OKResult'
+        400:
+          description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/ErrorResult'            
+definitions:
+  RegisterParams:
+    type: object
+    required:
+    - email
+    - username
+    - password
+    properties:
+      email:
+        type: string
+        example: abcd@abc.com
+      username:
+        type: string
+        example: abcd
+      password:
+        type: string
+        example: abcd1234
+  LoginParams:
+    type: object
+    required:
+    - email
+    - password
+    properties:
+      email:
+        type: string
+        example: abcd@abc.com
+      password:
+        type: string
+        example: abcd1234        
+  OKResult:
+    type: object
+    required:
+    - code
+    properties:
+      code:
+        type: integer
+        format: int32
+        example: 0
+  LoginResult:
+    type: object
+    required:
+    - code
+    - username
+    properties:
+      code:
+        type: integer
+        format: int32
+        example: 0        
+      username:
+        type: string
+        example: zhs007              
+  ErrorResult:
+    required:
+    - code
+    properties:
+      code:
+        type: integer
+        format: int32
+        example: 2000    
+      error:
+        type: string
+        example: 'Err: error!'
