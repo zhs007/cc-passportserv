@@ -21,13 +21,13 @@ const loginRule = {
   password: 'string',
 };
 
-const checkemailRule = {
-  email: 'string',
-};
+// const checkemailRule = {
+//   email: 'string',
+// };
 
-const checkusernameRule = {
-  username: 'string',
-};
+// const checkusernameRule = {
+//   username: 'string',
+// };
 
 class AccountController extends Controller {
   async register() {
@@ -39,24 +39,28 @@ class AccountController extends Controller {
     if (errors) {
       jsonret.code = ERR_VALIDATE_PARAMS;
       jsonret.errors = errors;
+      this.ctx.status = 400;
 
       return;
     }
 
     if (!this.ctx.service.account.validateEMail(this.ctx.request.body.email)) {
       jsonret.code = ERR_EMAIL_FORMAT;
+      this.ctx.status = 400;
 
       return;
     }
 
     if (!this.ctx.service.account.validateUserName(this.ctx.request.body.username)) {
       jsonret.code = ERR_USERNAME_FORMAT;
+      this.ctx.status = 400;
 
       return;
     }
 
     if (!this.ctx.service.account.validatePassword(this.ctx.request.body.password)) {
       jsonret.code = ERR_PASSWORD_FORMAT;
+      this.ctx.status = 400;
 
       return;
     }
@@ -86,18 +90,21 @@ class AccountController extends Controller {
     if (errors) {
       jsonret.code = ERR_VALIDATE_PARAMS;
       jsonret.errors = errors;
+      this.ctx.status = 400;
 
       return;
     }
 
     if (!this.ctx.service.account.validateEMail(this.ctx.request.body.email)) {
       jsonret.code = ERR_EMAIL_FORMAT;
+      this.ctx.status = 400;
 
       return;
     }
 
     if (!this.ctx.service.account.validatePassword(this.ctx.request.body.password)) {
       jsonret.code = ERR_PASSWORD_FORMAT;
+      this.ctx.status = 400;
 
       return;
     }
@@ -119,21 +126,30 @@ class AccountController extends Controller {
       code: OK,
     };
 
-    const errors = this.app.validator.validate(checkemailRule, this.ctx.request.body);
-    if (errors) {
+    if (!this.ctx.query.email) {
       jsonret.code = ERR_VALIDATE_PARAMS;
-      jsonret.errors = errors;
+      this.ctx.status = 400;
+      // jsonret.errors = errors;
 
-      return;
+      return;      
     }
 
-    if (!this.ctx.service.account.validateEMail(this.ctx.request.body.email)) {
+    // const errors = this.app.validator.validate(checkemailRule, this.ctx.query);
+    // if (errors) {
+    //   jsonret.code = ERR_VALIDATE_PARAMS;
+    //   jsonret.errors = errors;
+
+    //   return;
+    // }
+
+    if (!this.ctx.service.account.validateEMail(this.ctx.query.email)) {
       jsonret.code = ERR_EMAIL_FORMAT;
+      this.ctx.status = 400;
 
       return;
     }
 
-    if (await this.ctx.service.account.findWithEMail(this.ctx.request.body.email) > 0) {
+    if (await this.ctx.service.account.findWithEMail(this.ctx.query.email) > 0) {
       jsonret.code = ERR_DUP_EMAIL;
 
       return;
@@ -145,21 +161,30 @@ class AccountController extends Controller {
       code: OK,
     };
 
-    const errors = this.app.validator.validate(checkusernameRule, this.ctx.request.body);
-    if (errors) {
+    if (!this.ctx.query.username) {
       jsonret.code = ERR_VALIDATE_PARAMS;
-      jsonret.errors = errors;
+      this.ctx.status = 400;
+      // jsonret.errors = errors;
 
-      return;
+      return;      
     }
 
-    if (!this.ctx.service.account.validateUserName(this.ctx.request.body.username)) {
+    // const errors = this.app.validator.validate(checkusernameRule, this.ctx.query);
+    // if (errors) {
+    //   jsonret.code = ERR_VALIDATE_PARAMS;
+    //   jsonret.errors = errors;
+
+    //   return;
+    // }
+
+    if (!this.ctx.service.account.validateUserName(this.ctx.query.username)) {
       jsonret.code = ERR_USERNAME_FORMAT;
+      this.ctx.status = 400;
 
       return;
     }
 
-    if (await this.ctx.service.account.findWithUserName(this.ctx.request.body.username) > 0) {
+    if (await this.ctx.service.account.findWithUserName(this.ctx.query.username) > 0) {
       jsonret.code = ERR_DUP_USERNAME;
 
       return;

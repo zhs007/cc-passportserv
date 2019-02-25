@@ -14,10 +14,10 @@ Use docker deployment, use nginx's upstream, and configure ssl for nginx.
 
 ### Unit Test
 
-Configure ``config/config.unittest.js``.  
+You can see ``Dockerfile.unittest``.  
 
 ```bash
-npm test
+sh startunittest.sh
 ```
 
 ### Docker Deployment

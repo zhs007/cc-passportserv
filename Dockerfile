@@ -1,5 +1,7 @@
 FROM node:latest
 
+MAINTAINER zerro "zerrozhao@gmail.com"
+
 WORKDIR /usr/src/app/
 
 COPY package.json ./

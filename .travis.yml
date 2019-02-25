@@ -1,10 +1,5 @@
-sudo: false
-language: node_js
-node_js:
-  - '8'
-install:
-  - npm i npminstall && npminstall
+services:
+  - docker
+
 script:
-  - npm run ci
-after_script:
-  - npminstall codecov && codecov
+  - docker build -f ./Dockerfile.unittest -t cc-passport.unittest .

@@ -1,0 +1,23 @@
+FROM node:latest
+
+MAINTAINER zerro "zerrozhao@gmail.com"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		mysql-server \
+        mysql-client \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app/
+
+COPY package.json ./
+RUN npm i -dd    
+
+COPY ./ ./
+
+RUN /etc/init.d/mysql start \
+    && mysql -u root -e "create database ccpassport;" \
+    && mysql -u root mysql < sql/fix_auth_socket.sql \
+    && mysql -u root ccpassport < sql/ccpassport.sql \
+    && mysql -u root ccpassport < sql/inittest.sql \
+    && cp -rf ./cfg ./config \
+    && npm run test
