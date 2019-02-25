@@ -1,5 +1,7 @@
 # cc-passportserv
 
+[![Build Status](https://travis-ci.org/zhs007/cc-passportserv.svg?branch=master)](https://travis-ci.org/zhs007/cc-passportserv)
+
 This is a coding challenge for passport.  
 This service is based on [egg.js](https://eggjs.org/).  
 Use docker deployment, use nginx's upstream, and configure ssl for nginx.  
